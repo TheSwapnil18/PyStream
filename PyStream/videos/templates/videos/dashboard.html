@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Your Dashboard</h2>
+    
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card p-3 text-center">
+                <h5>{{ total_videos }}</h5>
+                <p>Uploaded Videos</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3 text-center">
+                <h5>{{ total_views }}</h5>
+                <p>Total Views</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3 text-center">
+                <h5>{{ total_likes }}</h5>
+                <p>Total Likes</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3 text-center">
+                <h5>{{ total_dislikes }}</h5>
+                <p>Total Dislikes</p>
+            </div>
+        </div>
+    </div>
+
+    <h4 class="mb-3">Your Videos</h4>
+    <div class="row">
+        {% for video in videos %}
+        <div class="col-md-4 mb-4">
+            <a href="{% url 'video_detail' video.id %}" class="text-decoration-none text-dark">
+                <div class="card shadow-sm">
+                    {% if video.thumbnail %}
+                        <img src="{{ video.thumbnail.url }}" class="card-img-top" alt="{{ video.title }}">
+                    {% else %}
+                        <video class="w-100" controls>
+                            <source src="{{ video.file.url }}" type="video/mp4">
+                        </video>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ video.title }}</h5>
+                        <p class="card-text text-muted">{{ video.total_likes }} Likes | {{ video.total_dislikes }} Dislikes</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+            <p>You have not uploaded any videos yet.</p>
+        {% endfor %}
+    </div>
+
+    <a href="{% url 'manage_videos' %}" class="btn btn-primary mt-3">Manage Videos</a>
+</div>
+{% endblock %}

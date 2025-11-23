@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}{{ video.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <!-- Video + Details + Comments Column -->
+        <div class="col-md-8">
+            <video class="w-100 mb-3" controls autoplay>
+                <source src="{{ video.file.url }}" type="video/mp4">
+            </video>
+
+            <h3 class="fw-bold">{{ video.title }}</h3>
+            <p class="text-muted">
+                {{ video.views }} views • By {{ video.uploaded_by.first_name }} • {{ video.uploaded_at|date:"M d, Y" }}
+            </p>
+
+            <!-- Like / Dislike Buttons -->
+            <div class="mb-3">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'like_video' video.id %}" class="btn btn-outline-primary me-2">
+                        👍 {% if user in video.likes.all %}Liked{% else %}Like{% endif %} ({{ video.total_likes }})
+                    </a>
+                    <a href="{% url 'dislike_video' video.id %}" class="btn btn-outline-danger">
+                        👎 {% if user in video.dislikes.all %}Disliked{% else %}Dislike{% endif %} ({{ video.total_dislikes }})
+                    </a>
+                {% else %}
+                    <button class="btn btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#loginModal">
+                        👍 Like ({{ video.total_likes }})
+                    </button>
+                    <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#loginModal">
+                        👎 Dislike ({{ video.total_dislikes }})
+                    </button>
+                {% endif %}
+            </div>
+
+            <!-- Video Description -->
+            <p>{{ video.description }}</p>
+
+            <!-- Comments Section -->
+            <hr>
+            <h5>{{ comments.count }} Comments</h5>
+
+            {% if user.is_authenticated %}
+                <!-- Comment Form -->
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form.text }}
+                    <button type="submit" class="btn btn-primary btn-sm mt-2">Comment</button>
+                </form>
+            {% else %}
+                <p class="text-muted">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Sign in</a> to post a comment.
+                </p>
+            {% endif %}
+
+            <!-- Show Comments -->
+            <div class="mt-3">
+                {% for comment in comments %}
+                    <div class="mb-2 p-2 border rounded">
+                        <strong>{{ comment.user.first_name }}</strong> 
+                        <span class="text-muted small">{{ comment.created_at|date:"M d, Y H:i" }}</span>
+                        <p class="mb-0">{{ comment.text }}</p>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No comments yet. Be the first to comment!</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Sidebar Column -->
+        <div class="col-md-4">
+            <h5 class="fw-bold mb-3">More Videos</h5>
+            {% for v in videos %}
+                {% if v.id != video.id %}
+                    <a href="{% url 'video_detail' v.id %}" class="text-decoration-none text-dark d-flex mb-3">
+                        {% if v.thumbnail %}
+                            <img src="{{ v.thumbnail.url }}" class="me-2" style="width:120px; height:70px; object-fit:cover;">
+                        {% else %}
+                            <video style="width:120px; height:70px; object-fit:cover;">
+                                <source src="{{ v.file.url }}" type="video/mp4">
+                            </video>
+                        {% endif %}
+                        <div>
+                            <p class="mb-1 fw-bold">{{ v.title }}</p>
+                            <p class="mb-0 text-muted">{{ v.uploaded_by.first_name }}</p>
+                        </div>
+                    </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- 🔒 Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center p-3">
+      <div class="modal-header border-0">
+        <h5 class="modal-title" id="loginModalLabel">Sign in required</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>You need to sign in to like, dislike, or comment on this video.</p>
+        <a href="/accounts/login/" class="btn btn-primary">Sign In</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

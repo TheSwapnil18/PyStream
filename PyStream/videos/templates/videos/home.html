@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="d-flex">
+    <!-- Sidebar -->
+    <div class="sidebar bg-light p-3 border-end"
+         style="width: 220px; height: calc(100vh - 56px); position: fixed; top: 56px; left: 0; overflow-y: auto;">
+        <ul class="nav flex-column">
+            <!-- Home Button -->
+            <li class="nav-item mb-2">
+                <a href="{% url 'home' %}" class="nav-link text-dark d-flex align-items-center">
+                    🏠 <span class="ms-2">Home</span>
+                </a>
+            </li>
+
+            <!-- Manage Videos -->
+            <li class="nav-item mb-2">
+                <a href="#" id="manageBtn" class="nav-link text-dark d-flex align-items-center">
+                    🎬 <span class="ms-2">Manage Videos</span>
+                </a>
+            </li>
+        </ul>
+
+        <!-- Login Alert -->
+        <div id="loginAlert" class="alert alert-warning alert-dismissible fade show d-none mt-3" role="alert">
+            You need to <strong>login</strong> to manage your videos.
+            <a href="{% url 'login' %}" class="btn btn-sm btn-primary ms-2">Login</a>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container-fluid" style="margin-left: 0px; padding-top: 0px;">
+        <h2 class="fw-bold mb-4">Latest Videos</h2>
+
+        <div class="row">
+            {% for video in videos %}
+            <div class="col-md-4 mb-4">
+                <a href="{% url 'video_detail' video.id %}" class="text-decoration-none text-dark">
+                    <div class="card shadow-sm">
+                        {% if video.thumbnail %}
+                        <img src="{{ video.thumbnail.url }}" class="card-img-top" alt="{{ video.title }}">
+                        {% else %}
+                        <video class="w-100" style="height:180px; object-fit:cover;">
+                            <source src="{{ video.file.url }}" type="video/mp4">
+                        </video>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ video.title }}</h5>
+                            <p class="card-text text-muted mb-1">By {{ video.uploaded_by.first_name }}</p>
+                            <p class="mb-0 text-muted small">{{ video.total_likes }} Likes | {{ video.total_dislikes }} Dislikes</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% empty %}
+            <p class="text-muted">No videos available.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const manageBtn = document.getElementById("manageBtn");
+    const loginAlert = document.getElementById("loginAlert");
+    const isAuthenticated = {{ user.is_authenticated|yesno:"true,false" }};
+
+    manageBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (isAuthenticated) {
+            window.location.href = "{% url 'manage_videos' %}";
+        } else {
+            loginAlert.classList.remove("d-none");
+            loginAlert.scrollIntoView({ behavior: "smooth" });
+        }
+    });
+});
+</script>
+{% endblock %}

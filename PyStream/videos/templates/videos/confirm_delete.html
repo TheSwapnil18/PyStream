@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Delete Video{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center">
+    <h3 class="mb-4">Are you sure you want to delete this video?</h3>
+
+    <div class="card mx-auto shadow-sm" style="max-width: 500px;">
+        {% if video.thumbnail %}
+        <img src="{{ video.thumbnail.url }}" class="card-img-top" alt="{{ video.title }}">
+        {% else %}
+        <video class="w-100" controls>
+            <source src="{{ video.file.url }}" type="video/mp4">
+        </video>
+        {% endif %}
+        <div class="card-body">
+            <h5 class="card-title">{{ video.title }}</h5>
+            <p class="text-muted">Uploaded by {{ video.uploaded_by.first_name }}</p>
+
+            <form method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger me-2">Yes, Delete</button>
+                <a href="{% url 'manage_videos' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

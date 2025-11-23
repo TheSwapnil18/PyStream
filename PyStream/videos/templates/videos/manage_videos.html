@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}My Videos{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">My Videos</h2>
+        <a href="{% url 'upload' %}" class="btn btn-primary">+ Upload New Video</a>
+    </div>
+
+    {% if videos %}
+    <div class="row">
+        {% for video in videos %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                {% if video.thumbnail %}
+                <img src="{{ video.thumbnail.url }}" class="card-img-top" alt="{{ video.title }}">
+                {% else %}
+                <video class="w-100" style="height:200px; object-fit:cover;">
+                    <source src="{{ video.file.url }}" type="video/mp4">
+                </video>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ video.title }}</h5>
+                    <p class="text-muted mb-1">Uploaded: {{ video.uploaded_at|date:"M d, Y" }}</p>
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'video_detail' video.id %}" class="btn btn-outline-info btn-sm">View</a>
+                        <a href="{% url 'delete_video' video.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <p class="text-muted">You haven’t uploaded any videos yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

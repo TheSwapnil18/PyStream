@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Signup{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow p-4" style="width: 420px; border-radius: 12px;">
+        <h3 class="text-center mb-3 fw-bold">Create Account</h3>
+        <p class="text-center text-muted mb-4">Join PyStream and start streaming your videos</p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">First Name</label>
+                    <input type="text" name="first_name" class="form-control" required placeholder="First Name">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" name="last_name" class="form-control" placeholder="Last Name">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" required placeholder="Enter your email">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" required placeholder="Create a password">
+            </div>
+
+            <button type="submit" class="btn btn-success w-100 mt-2">Signup</button>
+        </form>
+
+        <div class="text-center mt-3">
+            <p class="mb-1">Already have an account? <a href="/accounts/login/">Login</a></p>
+        </div>
+
+        <hr>
+
+        <button class="btn btn-outline-dark w-100 mt-2">
+            Signup with Google
+        </button>
+    </div>
+</div>
+{% endblock %}

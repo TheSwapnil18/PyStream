@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Video{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="fw-bold mb-4">Upload Video</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Title</label>
+            {{ form.title }}
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            {{ form.description }}
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Video File</label>
+            {{ form.file }}
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Thumbnail (optional)</label>
+            {{ form.thumbnail }}
+        </div>
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
+</div>
+{% endblock %}
