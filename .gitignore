@@ -1,0 +1,25 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Virtual environment
+.venv/
+venv/
+
+# Editor directories and files
+.vscode/
+*.swp
+
+# OS files
+.DS_Store
+
+# Django media and DB (optional — remove if you want DB tracked)
+media/
+*.sqlite3
+.env
